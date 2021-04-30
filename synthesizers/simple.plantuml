@@ -1,0 +1,45 @@
+@startuml test
+
+class Sequencer <Sequencer> {
+}
+
+class OscA <Oscillator> {
+}
+
+class OscB <Oscillator> {
+}
+
+class EnvA <ADSREnvelope> {
+	- attack: .1
+	- decay: .1
+	- sustain: .5
+	- release: .1
+}
+
+class EnvB <ADSREnvelope> {
+	- attack: .5
+	- decay: .3
+	- sustain: .4
+	- release: .2
+}
+
+class Mix <Mixer> {
+	- level1: .5
+	- level2: .5
+}
+
+class Output <Output> {
+}
+
+Sequencer "NoteOnOff1" *-- "onOff" EnvA
+Sequencer "NoteOnOff2" *-- "onOff" EnvB
+Sequencer "NoteFrequency1" *-- "frequency" OscA
+Sequencer "NoteFrequency2" *-- "frequency" OscB
+
+OscA "output" *-- "input1" EnvA
+OscB "output" *-- "input1" EnvB
+EnvA "output" *-- "input1" Mix
+EnvB "output" *-- "input2" Mix
+Mix "output" *-- "input" Output
+
+@enduml
