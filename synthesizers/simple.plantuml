@@ -4,9 +4,11 @@ class Sequencer <Sequencer> {
 }
 
 class OscA <Oscillator> {
+	- shape: saw
 }
 
 class OscB <Oscillator> {
+	- shape: square
 }
 
 class EnvA <ADSREnvelope> {
@@ -24,11 +26,24 @@ class EnvB <ADSREnvelope> {
 }
 
 class Mix <Mixer> {
-	- level1: .5
-	- level2: .5
+	- cv: .5
 }
 
 class Output <Output> {
+}
+
+class Lfo1 <Oscillator> {
+	- shape: triangle
+	- frequency: 12.
+}
+
+class Filter <Filter> {
+	- type: lowpass
+	- resonance: .5
+}
+
+class LfoFilterTransform <Math> {
+	- formula: output = .5+.1*input
 }
 
 Sequencer "NoteOnOff1" *-- "onOff" EnvA
@@ -40,6 +55,10 @@ OscA "output" *-- "input1" EnvA
 OscB "output" *-- "input1" EnvB
 EnvA "output" *-- "input1" Mix
 EnvB "output" *-- "input2" Mix
-Mix "output" *-- "input" Output
+Mix "output" *-- "input" Filter
+
+Lfo1 "output" *-- "input" LfoFilterTransform
+LfoFilterTransform "output" *-- "cutoff" Filter
+Filter "output" *-- "input" Output
 
 @enduml
