@@ -29,3 +29,12 @@ midly = { version = "0.5.1", default-features = false, features = [] }
 # ryu = "1.0.5" # fast float-string-conversion
 # glam = { version = "0.13.0", default-features = false, features = ["libm"] } # in case we want their smoothstep or something
 half = "1.7.1"
+heapless = "0.6.1"
+rustop = "1.1.1"
+
+# cty = "0.2.1"
+# printf-compat = { version = "0.1.1", default-features = false }
+
+[[bin]]
+name="knober"
+path="src/knober/knober.rs"
