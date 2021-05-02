@@ -73,6 +73,7 @@ fn main() {
 		.next()
 		.unwrap();
 
+	// Parse the synth definition file.
 	let mut name: String = String::from("");
 	let mut edges: Vec<Edge> = Vec::new();
 	let mut nodes: Vec<Node> = Vec::new();
@@ -103,15 +104,6 @@ fn main() {
 		}
 	}
 
+	// Write the resulting rust file.
 	out_writer.write(&format!("Name: {}", name).as_bytes());
-
-	// let result = uml_parser(&file_content.as_bytes());
-	// let uml_tokens: UMLTokens = match result {
-	// 	IResult::Done(_, tokens) => tokens,
-	// 	_ => panic!("{:?}", result),
-	// };
-
-	// for uml_token in uml_tokens.tokens {
-	// 	out_writer.write(&format!("Token: {}", uml_token).as_bytes());
-	// }
 }
