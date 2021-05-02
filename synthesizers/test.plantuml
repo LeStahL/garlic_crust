@@ -1,4 +1,4 @@
 @startuml identifier
-class Sequencer <Sequencer> {
+class sequencer <Sequencer> {
 }
 @enduml
