@@ -18,6 +18,31 @@ use std::path::*;
 use std::boxed::*;
 use std::collections::*;
 
+struct Edge {
+	from_node: String,
+	from_attribute: String,
+	to_attribute: String,
+	to_node: String,
+}
+
+enum AttributeType {
+	QuotedFileName,
+	EnumEntry,
+	Float,
+}
+
+struct Attribute {
+	attribute_type: AttributeType,
+	name: String,
+	value: String,
+}
+
+struct Node {
+	name: String,
+	node_type: String,
+	attributes: Vec<Attribute>,
+}
+
 fn main() {
     let (args, rest) = opts! {
 		auto_shorts true;
@@ -49,10 +74,31 @@ fn main() {
 		.unwrap();
 
 	let mut name: String = String::from("");
+	let mut edges: Vec<Edge> = Vec::new();
+	let mut nodes: Vec<Node> = Vec::new();
 
 	for entry in parsed_synth_file.into_inner() {
 		match entry.as_rule() {
 			Rule::identifier => name = String::from(entry.as_str()),
+			Rule::block => {
+				for block_entry in entry.into_inner() {
+					match block_entry.as_rule() {
+						Rule::node => {
+
+						}
+						Rule::edge => {
+							let mut edge_data_iterator = block_entry.into_inner();
+							edges.push(Edge {
+								from_node: String::from(edge_data_iterator.next().unwrap().as_str()),
+								from_attribute: String::from(edge_data_iterator.next().unwrap().as_str()),
+								to_attribute: String::from(edge_data_iterator.next().unwrap().as_str()),
+								to_node: String::from(edge_data_iterator.next().unwrap().as_str()),
+							});
+						}
+						_ => (),
+					}
+				}
+			}
 			_ => (),
 		}
 	}
