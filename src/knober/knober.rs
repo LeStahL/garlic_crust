@@ -48,6 +48,17 @@ fn main() {
 		.next()
 		.unwrap();
 
+	let mut name: String = String::from("");
+
+	for entry in parsed_synth_file.into_inner() {
+		match entry.as_rule() {
+			Rule::identifier => name = String::from(entry.as_str()),
+			_ => (),
+		}
+	}
+
+	out_writer.write(&format!("Name: {}", name).as_bytes());
+
 	// let result = uml_parser(&file_content.as_bytes());
 	// let uml_tokens: UMLTokens = match result {
 	// 	IResult::Done(_, tokens) => tokens,
