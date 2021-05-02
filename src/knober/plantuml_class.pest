@@ -12,7 +12,7 @@ file_path = {windows_path | linux_path}
 		file_name = {(ASCII_ALPHANUMERIC | "-" | "_" | ".")+}
 	linux_path = {file_name | ("/"? ~ (file_name ~ "/")* ~ file_name)}
 
-file = {"@startuml" ~ identifier ~ block* ~ "@enduml"}
+file = {"@startuml" ~ identifier? ~ block* ~ "@enduml"}
 	block = {node | edge}
 		node = {"class" ~ identifier ~ "<" ~ identifier ~ ">" ~ "{" ~ attribute* ~ "}"}
 			attribute = {"-" ~ identifier ~ ":" ~ attribute_value}
