@@ -1,64 +1,64 @@
-@startuml test
+@startuml simple
 
-class Sequencer <Sequencer> {
+class sequencer <Sequencer> {
 }
 
-class OscA <Oscillator> {
-	- shape: saw
+class osc_a <Oscillator> {
+	- shape: WaveShapes::Saw
 }
 
-class OscB <Oscillator> {
-	- shape: square
+class osc_b <Oscillator> {
+	- shape: WaveShapes::Square
 }
 
-class EnvA <ADSREnvelope> {
+class env_a <ADSREnvelope> {
 	- attack: .1
 	- decay: .1
 	- sustain: .5
 	- release: .1
 }
 
-class EnvB <ADSREnvelope> {
+class env_b <ADSREnvelope> {
 	- attack: .5
 	- decay: .3
 	- sustain: .4
 	- release: .2
 }
 
-class Mix <Mixer> {
+class mix <Mixer> {
 	- cv: .5
 }
 
-class Output <Output> {
+class output <Output> {
 }
 
-class Lfo1 <Oscillator> {
-	- shape: triangle
+class lfo1 <Oscillator> {
+	- shape: WaveShapes::Triangle
 	- frequency: 12.
 }
 
-class Filter <Filter> {
-	- type: lowpass
+class filter <Filter> {
+	- type: FilterTypes::LowPass
 	- resonance: .5
 }
 
-class LfoFilterTransform <Math> {
-	- formula: output = .5+.1*input
+class lfo_filter_transform <Math> {
+	- mapping: "lfoTransform1.rs"
 }
 
-Sequencer "NoteOnOff1" *-- "onOff" EnvA
-Sequencer "NoteOnOff2" *-- "onOff" EnvB
-Sequencer "NoteFrequency1" *-- "frequency" OscA
-Sequencer "NoteFrequency2" *-- "frequency" OscB
+Sequencer "NoteOnOff1" *-- "on_off" env_a
+Sequencer "NoteOnOff2" *-- "on_off" env_b
+Sequencer "NoteFrequency1" *-- "frequency" osc_a
+Sequencer "NoteFrequency2" *-- "frequency" osc_b
 
-EnvA "output" *-- "input1" OscA
-EnvB "output" *-- "input1" OscB
-OscA "output" *-- "input1" Mix
-OscB "output" *-- "input2" Mix
-Mix "output" *-- "input" Filter
+env_a "output" *-- "amplitude" osc_a
+env_b "output" *-- "amplitude" osc_b
+osc_a "output" *-- "input1" mix
+osc_b "output" *-- "input2" mix
+mix "output" *-- "input" filter
 
-Lfo1 "output" *-- "input" LfoFilterTransform
-LfoFilterTransform "output" *-- "cutoff" Filter
-Filter "output" *-- "input" Output
+lfo1 "output" *-- "input" lfo_filter_transform
+lfo_filter_transform "output" *-- "cutoff" filter
+filter "output" *-- "input" output
 
 @enduml

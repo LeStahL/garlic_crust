@@ -1,10 +1,22 @@
 #![feature(io_read_to_string)]
+extern crate rustop;
 
-use ::rustop::opts;
-use ::std::io::*;
-use ::std::fs::*;
-use ::std::path::*;
-use ::std::boxed::*;
+extern crate pest;
+#[macro_use]
+extern crate pest_derive;
+
+use pest::Parser;
+
+#[derive(Parser)]
+#[grammar = "knober/plantuml_class.pest"]
+struct PlantUmlClassParser;
+
+use rustop::opts;
+use std::io::*;
+use std::fs::*;
+use std::path::*;
+use std::boxed::*;
+use std::collections::*;
 
 fn main() {
     let (args, rest) = opts! {
@@ -16,20 +28,33 @@ fn main() {
 
 	let mut in_reader = BufReader::new(
 		match &args.input {
-			Some(ref x) => Box::new(File::open(&Path::new(x)).unwrap()) as Box<dyn Read>,
-			None => Box::new(stdin()) as Box<dyn Read>,
+			Some(ref x) => Box::new(File::open(&Path::new(x)).unwrap()) as Box<dyn std::io::Read>,
+			None => Box::new(stdin()) as Box<dyn std::io::Read>,
 		}
 	);
 
-	let mut fileContent: String = std::io::read_to_string(&mut in_reader)
-		.expect("Unable to read input file.");
-
-
 	let mut out_writer = BufWriter::new(
 		match &args.output {
-        	Some(ref x) => Box::new(File::create(&Path::new(x)).unwrap()) as Box<dyn Write>,
-        	None => Box::new(stdout()) as Box<dyn Write>,
+        	Some(ref x) => Box::new(File::create(&Path::new(x)).unwrap()) as Box<dyn std::io::Write>,
+        	None => Box::new(stdout()) as Box<dyn std::io::Write>,
     	}
 	);
-    out_writer.write(fileContent.as_bytes()).unwrap();
+
+	let mut file_content: String = std::io::read_to_string(&mut in_reader)
+		.expect("Unable to read input file.");
+
+	let parsed_synth_file = PlantUmlClassParser::parse(Rule::file, &file_content)
+		.expect("Error parsing input file.")
+		.next()
+		.unwrap();
+
+	// let result = uml_parser(&file_content.as_bytes());
+	// let uml_tokens: UMLTokens = match result {
+	// 	IResult::Done(_, tokens) => tokens,
+	// 	_ => panic!("{:?}", result),
+	// };
+
+	// for uml_token in uml_tokens.tokens {
+	// 	out_writer.write(&format!("Token: {}", uml_token).as_bytes());
+	// }
 }
