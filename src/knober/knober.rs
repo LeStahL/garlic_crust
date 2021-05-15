@@ -85,8 +85,67 @@ fn main() {
 				for block_entry in entry.into_inner() {
 					match block_entry.as_rule() {
 						Rule::node => {
+							let mut node_data_iterator = block_entry.into_inner();
+							let block_name = String::from(node_data_iterator.next().unwrap().as_str());
+							let block_type = String::from(node_data_iterator.next().unwrap().as_str());
+							let mut attributes: Vec<Attribute> = Vec::new();
+							
+							for attribute_entry in node_data_iterator {
+								let mut attribute_name: String;
+								let attribute_type: AttributeType;
+								let attribute_value: String;
 
-						}
+								match attribute_entry.as_rule() {
+									Rule::identifier => {
+										attribute_name = String::from(attribute_entry.as_str());
+										out_writer.write(&format!("Name: {}\n", attribute_name).as_bytes());
+									}
+									Rule::attribute_value => {
+
+									}
+									_ => (),
+								}
+
+								// attributes.push(Attribute{
+								// 	name: attribute_name,
+								// 	attribute_type: attribute_type,
+								// 	value: attribute_value,
+								// });
+							}
+						// 	match node_data_iterator.next() {
+						// 		Some(x) => {
+						// 			for attribute_entry in x.into_inner() {
+						// 				let mut attribute_data_iterator = attribute_entry.into_inner();
+						// 				let attribute_name = String::from(attribute_data_iterator.next().unwrap().as_str());
+
+						// 				out_writer.write(&format!("Attribute name: {}\n", attribute_name).as_bytes());
+
+						// // 				let mut attribute_type: AttributeType;
+						// // 				let mut attribute_value: String;
+
+						// // 				match attribute_data_iterator.next().unwrap().as_rule() {
+						// // 					Rule::quoted_file_name => {
+						// // 						attribute_type = AttributeType::QuotedFileName;
+						// // 					}
+						// // 					Rule::enum_entry => {
+						// // 						attribute_type = AttributeType::EnumEntry;
+						// // 					}
+						// // 					Rule::float => {
+						// // 						attribute_type = AttributeType::Float;
+						// // 					}
+						// // 					_ => (),
+						// // 				}
+						// 			}
+						// 		},
+						// 		None => (),
+						// 	}
+
+							nodes.push(Node {
+								name: block_name,
+								node_type: block_type,
+								attributes: attributes,
+							});
+						},
 						Rule::edge => {
 							let mut edge_data_iterator = block_entry.into_inner();
 							edges.push(Edge {
