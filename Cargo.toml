@@ -33,6 +33,7 @@ heapless = "0.6.1"
 rustop = "1.1.1"
 pest_derive = "2.1.0"
 pest = "2.1.3"
+petgraph = "0.4.13"
 
 # cty = "0.2.1"
 # printf-compat = { version = "0.1.1", default-features = false }

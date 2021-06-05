@@ -5,6 +5,8 @@ extern crate pest;
 #[macro_use]
 extern crate pest_derive;
 
+extern crate petgraph;
+
 use pest::Parser;
 
 #[derive(Parser)]
@@ -17,6 +19,7 @@ use std::fs::*;
 use std::path::*;
 use std::boxed::*;
 use std::collections::*;
+use petgraph::Graph;
 
 struct Edge {
 	from_node: String,
@@ -76,6 +79,7 @@ fn main() {
 
 	// Parse the synth definition file.
 	let mut name: String = String::new();
+
 	let mut edges: Vec<Edge> = Vec::new();
 	let mut nodes: Vec<Node> = Vec::new();
 
@@ -146,6 +150,12 @@ fn main() {
 			}
 			_ => (),
 		}
+	}
+
+	// Topological sorting of the nodes.
+	let mut graph = Graph::<&Node, &Edge>::new();
+	for node in Nodes {
+		
 	}
 
 	// Write the resulting rust file.
