@@ -2,23 +2,25 @@
 WHITESPACE = _{" " | "\t" | "\n" | "\r"}
 COMMENT = _{"'" ~ (!"\n" ~ ANY)*}
 
+string = { "\"" ~ (raw_string | escape)* ~ "\"" }
+	raw_string = { (!("\\" | "\"") ~ ANY)+ }
+	escape = { "\\" ~ (predefined | byte | unicode) }
+		predefined = { "n" | "r" | "t" | "\\" | "0" | "\"" | "'" }
+		byte = { "x" ~ hex{2} }
+		unicode = { "u" ~ "{" ~ unicode_hex ~ "}" }
+			unicode_hex = { hex{1, 6} }
+		hex = _{ '0'..'9' | 'a'..'f' | 'A'..'F' }
+
 quoted_identifier = {"\"" ~ identifier ~ "\""}
 	identifier = @{(ASCII_ALPHA | "_")+ ~ (ASCII_ALPHANUMERIC | "_")*}
 
 float = @{ (int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)?) | (("+" | "-")? ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)?) }
     int = { ("+" | "-")? ~ ASCII_DIGIT+ }
 
-file_path = {windows_path | linux_path}
-	windows_path = {file_name | ((ASCII_ALPHA{1} ~ ":\\")? ~ (file_name ~ "\\")+ ~ file_name?)}
-		file_name = {(ASCII_ALPHANUMERIC | "-" | "_" | ".")+}
-	linux_path = {file_name | ("/"? ~ (file_name ~ "/")* ~ file_name)}
-
 file = {"@startuml" ~ identifier? ~ block* ~ "@enduml"}
 	block = {node | edge}
 		node = {"class" ~ identifier ~ "<" ~ identifier ~ ">" ~ "{" ~ attribute* ~ "}"}
 			attribute = {"-" ~ identifier ~ ":" ~ attribute_value}
-				// attribute values can be floats, filename arguments or enum entries
-				attribute_value = {quoted_file_name | enum_entry | float}
-					quoted_file_name = {"\"" ~ file_path ~ "\""}
+				attribute_value = {string | enum_entry | float}
 					enum_entry = {(identifier ~ "::")* ~ identifier}
 		edge = {identifier ~ quoted_identifier ~ "*--" ~ quoted_identifier ~ identifier}
